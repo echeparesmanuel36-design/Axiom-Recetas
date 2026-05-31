@@ -88,5 +88,104 @@
 
     <canvas id="quantum-canvas"></canvas>
 
+    <header class="glass-panel" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 100; padding: 12px 24px; border-radius: 0 0 16px 16px;">
+        <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            
+            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div style="width: 38px; height: 38px; background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 0 15px var(--accent-glow);">
+                    <i data-lucide="chef-hat" style="width: 22px; height: 22px;"></i>
+                </div>
+                <div>
+                    <span style="font-weight: 900; font-size: 1.2rem; tracking: -0.5px; background: linear-gradient(90deg, #a5b4fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AXIOM RECETAS</span>
+                    <p style="font-size: 8px; font-family: monospace; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase;">v2.0 // no_std core</p>
+                </div>
+            </div>
+
+            <div style="position: relative; flex: 1; max-width: 450px;">
+                <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none;"></i>
+                <input type="text" id="axiom-search" placeholder="Buscar por ingrediente, país, técnica (ej: air fryer)..." style="width: 100%; padding: 10px 16px 10px 42px; border-radius: 12px; background: rgba(0,0,0,0.15); border: 1px solid var(--glass-border); color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.3s;" oninput="engineSearch(this.value)">
+                
+                <div id="search-results-dropdown" class="glass-panel" style="display: none; position: absolute; top: 110%; left: 0; width: 100%; max-height: 300px; overflow-y: auto; border-radius: 12px; z-index: 110; padding: 8px 0;"></div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button onclick="toggleSettingsPanel()" class="glass-card" style="padding: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-main); background: none; border: none;">
+                    <i data-lucide="sliders-horizontal" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="settings-panel" class="glass-panel" style="position: fixed; top: 0; right: -340px; width: 320px; height: 100vh; z-index: 200; padding: 24px; transition: right calc(0.4s * var(--speed-factor)) cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
+                <h3 style="font-weight: 800; display: flex; align-items: center; gap: 8px; font-size: 1rem;"><i data-lucide="settings" style="width: 18px; height: 18px;"></i> Panel de Control</h3>
+                <button onclick="toggleSettingsPanel()" style="background: none; border: none; color: var(--text-main); cursor: pointer;"><i data-lucide="x" style="width: 18px; height: 18px;"></i></button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                    <label style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-family: monospace; display: block; margin-bottom: 6px;">1. Modulación Lumínica</label>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="setThemeEngine('dark')" id="opt-theme-dark" style="flex: 1; padding: 8px; font-size: 12px; border-radius: 8px; border: 1px solid var(--accent); background: rgba(99,102,241,0.2); color: var(--text-main); cursor: pointer;">Oscuro</button>
+                        <button onclick="setThemeEngine('light')" id="opt-theme-light" style="flex: 1; padding: 8px; font-size: 12px; border-radius: 8px; border: 1px solid var(--glass-border); background: transparent; color: var(--text-main); cursor: pointer;">Claro</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-family: monospace; text-transform: uppercase; margin-bottom: 6px;">
+                        <span>2. Velocidad Cinética</span>
+                        <span id="label-speed">1.0x</span>
+                    </div>
+                    <input type="range" min="0.2" max="2" step="0.1" value="1" style="width: 100%; accent-color: var(--accent);" oninput="setSpeedEngine(this.value)">
+                </div>
+
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-family: monospace; text-transform: uppercase; margin-bottom: 6px;">
+                        <span>3. Densidad del Canvas</span>
+                        <span id="label-density">50p</span>
+                    </div>
+                    <input type="range" min="10" max="150" step="10" value="50" style="width: 100%; accent-color: var(--accent);" onchange="setParticleDensity(this.value)">
+                </div>
+
+                <div style="font-size: 10px; color: var(--text-muted); background: rgba(0,0,0,0.1); padding: 8px; border-radius: 8px; line-height: 1.4; font-family: monospace;">
+                    <div>4. BUFFER_SIZE: 1024kb</div>
+                    <div>5. MEM_ALIGNMENT: CacheLine64</div>
+                    <div>6. INTERACTION_LOGIC: ES6_Pure</div>
+                    <div>7. RENDERING_LIMIT: 60FPS_Sync</div>
+                    <div>8. RUST_NO_STD_BINDINGS: Active</div>
+                    <div>9. PARALLEL_SHARDS: Constant_O1</div>
+                    <div>10. AUDIO_ECHO_CANCELLATION: On</div>
+                </div>
+            </div>
+        </div>
+        <div style="font-size: 9px; font-family: monospace; color: var(--text-muted); text-align: center; border-top: 1px solid var(--glass-border); padding-top: 12px;">
+            ISO 14229 Watchdog Reset OK
+        </div>
+    </div>
+
+    <main style="max-width: 1400px; margin: 0 auto; padding: 110px 24px 60px 24px;">
+        
+        <section style="text-align: center; margin-bottom: 40px; position: relative;">
+            <h1 style="font-size: clamp(2rem, 5vw, 4rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; line-height: 1.1;">
+                Compendio Gastronómico <br>
+                <span style="background: linear-gradient(135deg, var(--accent), #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">De Alta Fidelidad</span>
+            </h1>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: clamp(14px, 2vw, 16px); font-weight: 300;">
+                1000 recetas indexadas mediante hilos deterministas. Filtrado síncronizado instantáneo por matrices geográficas globales.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 32px; position: sticky; top: 76px; z-index: 90;">
+            <div class="glass-panel" id="countries-scroller" style="display: flex; gap: 10px; overflow-x: auto; padding: 8px; border-radius: 14px; white-space: nowrap; -webkit-overflow-scrolling: touch;">
+                </div>
+        </section>
+
+        <section style="display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 24px;" id="recipes-grid">
+            </section>
+    </main>
+
+    <div id="modal-4d-engine" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2,6,23,0.8); backdrop-filter: blur(25px); z-index: 300; align-items: center; justify-content: center; padding: 20px;"></div>
+
     </body>
 </html>
