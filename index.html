@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AXIOM RECETAS // Compendio Gastronómico Absoluto</title>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* === MATRIZ DE VARIABLES QUÁNTICAS (GLASSMORPHIC SYSTEM) === */
+        :root {
+            --bg-base: #020617;
+            --glass-bg: rgba(15, 23, 42, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-glow: rgba(99, 102, 241, 0.15);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --speed-factor: 1s; /* Control dinámico de velocidad */
+        }
+
+        [data-theme="light"] {
+            --bg-base: #f1f5f9;
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(15, 23, 42, 0.08);
+            --glass-glow: rgba(99, 102, 241, 0.06);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #4f46e5;
+            --accent-glow: rgba(79, 70, 229, 0.3);
+        }
+
+        /* === RESETEO Y OPTIMIZACIÓN EXTREMA DE MEMORIA DE RENDERIZADO === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            transition: background-color calc(0.4s * var(--speed-factor)) cubic-bezier(0.25, 1, 0.5, 1);
+            min-height: 100vh;
+        }
+
+        /* Búfer gráfico de partículas de fondo */
+        #quantum-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* === COMPONENTES DE DISEÑO CRISTALIZADO (GLASSMORPHISM) === */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.24);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            transition: transform calc(0.3s * var(--speed-factor)) cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color calc(0.3s * var(--speed-factor)) ease,
+                        box-shadow calc(0.3s * var(--speed-factor)) ease;
+        }
+
+        [data-theme="light"] .glass-card {
+            background: rgba(0, 0, 0, 0.02);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="quantum-canvas"></canvas>
+
+    </body>
+</html>
