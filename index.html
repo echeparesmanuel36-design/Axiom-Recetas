@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AXIOM RECETAS // Compendio Gastronómico Absoluto</title>
     
+    <!-- Lucide Icons para Interfaz Limpia -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -100,7 +101,7 @@
             to { transform: rotateX(65deg) rotateZ(360deg); }
         }
         
-        /* Modelos de Soporte / Vajilla del Pipeline */
+        /* Modelos de Soporte / Vajilla extraídos de Imagen 3776.png */
         .vessel-plato-plano {
             position: absolute;
             width: 140px;
@@ -131,6 +132,16 @@
             transform: translateZ(0px);
             border: 3px solid #1e293b;
         }
+        .vessel-skillet-hierro {
+            position: absolute;
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1e293b 20%, #090d16 80%);
+            box-shadow: 0 14px 34px rgba(0,0,0,0.7);
+            transform: translateZ(0px);
+            border: 4px solid #020617;
+        }
 
         /* Inyección de Mapeados de Materiales PBR Culinarios */
         .food-mesh-primitive {
@@ -140,12 +151,12 @@
         }
         
         .pbr-wet-clearcoat {
-            filter: drop-shadow(0 0 4px rgba(255,255,255,0.6)) saturate(130%);
-            box-shadow: inset 0 0 15px rgba(255,255,255,0.5);
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)) saturate(135%);
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.6);
         }
         .pbr-matte-rough {
-            filter: contrast(110%) blur(0.3px);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.7);
+            filter: contrast(115%) blur(0.2px);
+            box-shadow: inset 0 0 22px rgba(0,0,0,0.75);
         }
     </style>
 </head>
@@ -153,6 +164,7 @@
 
     <canvas id="quantum-canvas"></canvas>
 
+    <!-- ================= HEADER / NAVEGACIÓN ================= -->
     <header class="glass-panel" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 100; padding: 12px 24px; border-radius: 0 0 16px 16px;">
         <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
             
@@ -181,6 +193,7 @@
         </div>
     </header>
 
+    <!-- ================= SIDEPANEL: CONFIGURACIÓN ================= -->
     <div id="settings-panel" class="glass-panel" style="position: fixed; top: 0; right: -340px; width: 320px; height: 100vh; z-index: 200; padding: 24px; transition: right calc(0.4s * var(--speed-factor)) cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; justify-content: space-between;">
         <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
@@ -220,7 +233,7 @@
                     <div>7. RENDERING_LIMIT: 60FPS_Sync</div>
                     <div>8. RUST_NO_STD_BINDINGS: Active</div>
                     <div>9. PARALLEL_SHARDS: Constant_O1</div>
-                    <div>10. PBR_SHADERS: CSS3_Matrix</div>
+                    <div>10. PBR_SHADERS: 3776_Engine</div>
                 </div>
             </div>
         </div>
@@ -229,6 +242,7 @@
         </div>
     </div>
 
+    <!-- ================= CONTENEDOR PRINCIPAL ================= -->
     <main style="max-width: 1400px; margin: 0 auto; padding: 110px 24px 60px 24px;">
         
         <section style="text-align: center; margin-bottom: 40px; position: relative;">
@@ -237,23 +251,26 @@
                 <span style="background: linear-gradient(135deg, var(--accent), #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">De Alta Fidelidad</span>
             </h1>
             <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: clamp(14px, 2vw, 16px); font-weight: 300;">
-                1000 recetas únicas indexadas mediante hilos deterministas. Filtrado geográfico instantáneo con aislamiento de datos.
+                1000 recetas únicas mapeadas desde la matriz geométrica del pipeline. Filtrado instantáneo por países con aislamiento de memoria.
             </p>
         </section>
 
         <section style="margin-bottom: 32px; position: sticky; top: 76px; z-index: 90;">
             <div class="glass-panel" id="countries-scroller" style="display: flex; gap: 10px; overflow-x: auto; padding: 8px; border-radius: 14px; white-space: nowrap; -webkit-overflow-scrolling: touch;">
-                </div>
+                <!-- Botones de países inyectados -->
+            </div>
         </section>
 
         <section style="display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 24px;" id="recipes-grid">
-            </section>
+            <!-- Malla de tarjetas -->
+        </section>
     </main>
 
     <div id="modal-4d-engine" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2,6,23,0.8); backdrop-filter: blur(25px); z-index: 300; align-items: center; justify-content: center; padding: 20px;"></div>
 
+    <!-- ================= JAVASCRIPT MAESTRO REESTRUCTURADO CON MAPEO COMPLETO 3776.PNG ================= -->
     <script>
-        // === 1. ASSET PIPELINE NORMALIZADO CON JUEGOS DE LLAVES SIMÉTRICOS ===
+        // === 1. ASSET MAP CORREGIDO Y SANEADO CON NORMALIZACIÓN ESTRUCTURAL ===
         const PRODUCTION_ASSET_MAP = {
             "España": [
                 { name: "Espeto de Sardinas a la Caña", technique: "Brasa directa", geo: "Cylinder Geometry", vessel: "vessel-plato-plano", pbr: "pbr-matte-rough", color: "linear-gradient(45deg, #475569, #94a3b8)", ingredients: ["Sardinas frescas", "Sal gorda", "Cañas"], steps: ["Insertar sardinas en la caña.", "Clavar junto a las brasas de olivo a 45°.", "Asar 3 min por lomo."], cal: 210, energy: 878, health: 85 },
@@ -287,15 +304,15 @@
                 { name: "Mapo Tofu Tradicional", technique: "Wok / Salteado", geo: "Box Geometry", vessel: "vessel-cuenco-bowl", pbr: "pbr-wet-clearcoat", color: "linear-gradient(45deg, #ef4444, #991b1b)", ingredients: ["Tofu blando", "Carne picada res", "Pasta Pixian"], steps: ["Blanquear tofu en sal para asentar mallas.", "Saltear carne con pasta Doubanfermentada.", "Unir elementos, espesar con almidón."], cal: 310, energy: 1297, health: 70 },
                 { name: "Huevo de Cien Años", technique: "Maduración alcalina", geo: "Sphere Geometry", vessel: "vessel-plato-plano", pbr: "pbr-wet-clearcoat", color: "linear-gradient(135deg, #111827, #1e293b)", ingredients: ["Huevo pato", "Arcilla", "Cal", "Ceniza"], steps: ["Envolver huevos en mezcla arcillosa salina.", "Madurar bajo tierra durante tres meses.", "Retirar costra y laminar clara gelatinizada."], cal: 160, energy: 669, health: 75 },
                 { name: "Pato Pekín", technique: "Asado suspendido", geo: "Organic Extrusion", vessel: "vessel-plato-plano", pbr: "pbr-wet-clearcoat", color: "linear-gradient(to bottom, #9a3412, #451a03)", ingredients: ["Pato", "Maltosa líquida", "Especias"], steps: ["Inflar aire bajo piel para separar grasa.", "Escaldar y lacar con sirope de maltosa.", "Asar colgado en horno de tiro vertical."], cal: 540, energy: 2259, health: 45 },
-                { name: "Dim Sum Jiaozi", technique: "Vapor en bambú", geo: "Cylinder Geometry", vessel: "vessel-cuenco-bowl", pbr: "pbr-matte-rough", color: "linear-gradient(45deg, #f1f5f9, #cbd5e1)", ingredients: ["Masa trigo", "Cerdo picado", "Col china"], steps: ["Amasar y cortar obleas ultra-finas.", "Rellenar y cerrar con pliegues helicoidales.", "Cocer al vapor in cesta de bambú 6 min."], cal: 220, energy: 920, health: 80 },
+                { name: "Dim Sum Jiaozi", technique: "Vapor en bambú", geo: "Cylinder Geometry", vessel: "vessel-cuenco-bowl", pbr: "pbr-matte-rough", color: "linear-gradient(45deg, #f1f5f9, #cbd5e1)", ingredients: ["Masa trigo", "Cerdo picado", "Col china"], steps: ["Amasar y cortar obleas ultra-finas.", "Rellenar y cerrar con pliegues helicoidales.", "Cocer al vapor en cesta de bambú 6 min."], cal: 220, energy: 920, health: 80 },
                 { name: "Xiaolongbao", technique: "Vapor / Sopa interna", geo: "Torus Geometry", vessel: "vessel-cuenco-bowl", pbr: "pbr-wet-clearcoat", color: "linear-gradient(180deg, #f8fafc, #e2e8f0)", ingredients: ["Masa trigo", "Gelatina de caldo", "Cerdo"], steps: ["Picar carne mezclando con áspic de caldo frío.", "Envolver sellando pliegues herméticos.", "Vaporizar: el áspic licúa creando sopa interior."], cal: 240, energy: 1004, health: 78 }
             ],
             "EE.UU.": [
-                { name: "Cajun Gumbo", technique: "Estofado ciénaga", geo: "Complex Fluid Mesh", vessel: "vessel-cuenco-bowl", pbr: "pbr-wet-clearcoat", color: "linear-gradient(45deg, #451a03, #1e1b4b)", ingredients: ["Roux oscuro", "Okra", "Chistorra Louisiana"], steps: ["Cocinar harina y aceite hasta tono chocolate.", "Añadir la santísima trinidad (cebolla, apio, pimiento).", "Guisar con caldo y okra evasora."], cal: 410, energy: 1715, health: 62 },
+                { name: "Cajun Gumbo", technique: "Estofado ciénaga", geo: "Complex Fluid Mesh", vessel: "vessel-cuenco-bowl", pbr: "pbr-wet-clearcoat", color: "linear-gradient(45deg, #451a03, #1e1b4b)", ingredients: ["Roux oscuro", "Okra", "Chistorra Louisiana"], steps: ["Cocinar harina y aceite hasta tono chocolate.", "Añadir la santísima trinidad (cebolla, apio, pimiento).", "Guisar con caldo y okra espesante."], cal: 410, energy: 1715, health: 62 },
                 { name: "Smoked Brisket", technique: "BBQ ahumado lento", geo: "Box Geometry", vessel: "vessel-plato-plano", pbr: "pbr-matte-rough", color: "linear-gradient(135deg, #1e293b, #0f172a)", ingredients: ["Pecho res", "Rub pimienta gruesa", "Sal"], steps: ["Sazonar pieza con rub grueso al 50%.", "Introducir en ahumador de leña a 110°C.", "Cocinar 14 horas hasta romper colágeno."], cal: 580, energy: 2426, health: 38 },
                 { name: "Chicago Deep Dish", technique: "Horno molde profundo", geo: "Cylinder Geometry", vessel: "vessel-plato-plano", pbr: "pbr-wet-clearcoat", color: "linear-gradient(to top, #b91c1c, #ea580c)", ingredients: ["Masa maíz", "Mozzarella", "Tomate triturado"], steps: ["Forrar molde alto con masa crujiente.", "Colocar capas masivas de queso en el fondo.", "Cubrir con embutido y salsa de tomate superior."], cal: 650, energy: 2719, health: 30 },
                 { name: "Pulled Pork", technique: "Ahumado + Deshilachado", geo: "Organic Extrusion", vessel: "vessel-plato-plano", pbr: "pbr-matte-rough", color: "linear-gradient(45deg, #9a3412, #7c2d12)", ingredients: ["Aguja de cerdo", "Salsa barbacoa", "Vinagre manzana"], steps: ["Ahumar la aguja durante 9 horas.", "Envolver en papel aluminio con jugo de manzana.", "Desmechar las fibras musculares con garras."], cal: 520, energy: 2175, health: 40 },
-                { name: "Smash Burger", technique: "Plancha presión", geo: "Cylinder Geometry", vessel: "vessel-plato-plano", pbr: "pbr-wet-clearcoat", color: "linear-gradient(180deg, #3f3f46, #18181b)", ingredients: ["Carne res alta grasa", "Queso cheddar", "Pan"], steps: ["Hacer bolas de carne de 80 gramos sin amasar.", "Aplastarlas con prensa sobre plancha abrasadora.", "Lograr costra Maillard crujiente en bordes."], cal: 610, energy: 2552, health: 35 }
+                { name: "Smash Burger", technique: "Plancha presión", geo: "Cylinder Geometry", vessel: "vessel-skillet-hierro", pbr: "pbr-wet-clearcoat", color: "linear-gradient(180deg, #3f3f46, #18181b)", ingredients: ["Carne res alta grasa", "Queso cheddar", "Pan"], steps: ["Hacer bolas de carne de 80 gramos sin amasar.", "Aplastarlas con prensa sobre plancha abrasadora.", "Lograr costra Maillard crujiente en bordes."], cal: 610, energy: 2552, health: 35 }
             ],
             "Alemania": [
                 { name: "Königsberger Klopse", technique: "Escalfado / Hervido", geo: "Sphere Geometry", vessel: "vessel-cuenco-bowl", pbr: "pbr-matte-rough", color: "linear-gradient(45deg, #f1f5f9, #cbd5e1)", ingredients: ["Carne picada", "Anchoas", "Alcaparras"], steps: ["Mezclar carne con anchoas integrando umami.", "Moldear esferas y escalfar en caldo bajo.", "Ligar caldo con nata y alcaparras francesas."], cal: 360, energy: 1506, health: 70 },
@@ -322,12 +339,12 @@
                 { name: "Causa Limeña de Cangrejo", technique: "Prensado en frío", geo: "Cylinder Geometry", vessel: "vessel-plato-plano", pbr: "pbr-matte-rough", color: "linear-gradient(to top, #facc15, #ca8a04)", ingredients: ["Patata amarilla", "Ají amarillo", "Cangrejo"], steps: ["Prensar patata hervida caliente fijando masa.", "Condimentar con pasta de ají purificado y lima.", "Montar niveles con aguacate y pulpa marina."], cal: 290, energy: 1213, health: 84 },
                 { name: "Pachamanca", technique: "Cocción bajo tierra", geo: "Box Geometry", vessel: "vessel-cazuela-barro", pbr: "pbr-matte-rough", color: "linear-gradient(135deg, #451a03, #27272a)", ingredients: ["Carnes mixtas", "Tubérculos", "Huacatay"], steps: ["Macerar carnes en chincho y huacatay.", "Calentar piedras volcánicas a máxima energía.", "Enterrar componentes sellando con mantas de tierra."], cal: 510, energy: 2133, health: 80 },
                 { name: "Ceviche Clásico", technique: "Desnaturalización", geo: "Box Geometry", vessel: "vessel-cuenco-bowl", pbr: "pbr-wet-clearcoat", color: "linear-gradient(45deg, #f8fafc, #cbd5e1)", ingredients: ["Pescado blanco", "Lima", "Cebolla roja", "Ají limo"], steps: ["Cortar cubos limpios de pescado a cuchillo.", "Mezclar con cebolla e hilo de ají limo.", "Verter zumo de lima curando 60 segundos."], cal: 180, energy: 753, health: 99 },
-                { name: "Anticuchos de Corazón", technique: "Brasa rápida", geo: "Cylinder Geometry", vessel: "vessel-plato-plano", pbr: "pbr-matte-rough", color: "linear-gradient(to right, #7f1d1d, #450a0a)", ingredients: ["Corazón de res", "Ají panca", "Ajo", "Vinagre"], steps: ["Limpiar y cortar el corazón en láminas sesgadas.", "Marinar en ají panca, vinagre y ajo 12 horas.", "Ensartar en palos y asar a fuego violento."], cal: 320, energy: 1338, health: 85 },
-                { name: "Lomo Saltado", technique: "Salteado violento", geo: "Organic Extrusion", vessel: "vessel-plato-plano", pbr: "pbr-wet-clearcoat", color: "linear-gradient(180deg, #78350f, #3f3f46)", ingredients: ["Lomo de res", "Cebolla", "Tomate", "Sillao"], steps: ["Sellar la carne a fuego extremo flameando al wok.", "Añadir cebolla y tomate gruesos sin ablandar.", "Verter sillao y vinagre, montar con patatas."], cal: 470, energy: 1966, health: 75 }
+                { name: "Anticuchos de Corazón", technique: "Brasa rápida", geo: "Cylinder Geometry", vessel: "vessel-skillet-hierro", pbr: "pbr-matte-rough", color: "linear-gradient(to right, #7f1d1d, #450a0a)", ingredients: ["Corazón de res", "Ají panca", "Ajo", "Vinagre"], steps: ["Limpiar y cortar el corazón en láminas sesgadas.", "Marinar en ají panca, vinagre y ajo 12 hours.", "Ensartar en palos y asar a fuego violento."], cal: 320, energy: 1338, health: 85 },
+                { name: "Lomo Saltado", technique: "Salteado violento", geo: "Organic Extrusion", vessel: "vessel-skillet-hierro", pbr: "pbr-wet-clearcoat", color: "linear-gradient(180deg, #78350f, #3f3f46)", ingredients: ["Lomo de res", "Cebolla", "Tomate", "Sillao"], steps: ["Sellar la carne a fuego extremo flameando al wok.", "Añadir cebolla y tomate gruesos sin ablandar.", "Verter sillao y vinagre, montar con patatas."], cal: 470, energy: 1966, health: 75 }
             ]
         };
 
-        // === 2. PIPELINE DE EXPANSIÓN CON INDEPENDENCIA DE LLAVES Y CONTROL DE NULLS ===
+        // === 2. CONFIGURACIÓN COMPILATIVA DEL PIPELINE ===
         const RECIPES_DATABASE = [];
         const COUNTRIES = ["España", "Francia", "Brasil", "Japón", "China", "EE.UU.", "Alemania", "Rusia", "México", "Perú"];
         
@@ -341,24 +358,23 @@
             COUNTRIES.forEach(country => {
                 let assetsDisponibles = PRODUCTION_ASSET_MAP[country];
                 
-                // Generar exactamente 100 recetas únicas e independientes por país
+                // Generar exactamente 100 recetas únicas e independientes por país (1000 en total)
                 for (let i = 0; i < 100; i++) {
                     let assetBase = assetsDisponibles[i % assetsDisponibles.length];
                     
                     let esVariantePrimaria = (i === 0);
-                    let nombreFinal = esVariantePrimaria ? assetBase.name : `${assetBase.name} (Evolución Gen-${i})`;
+                    let nombreFinal = esVariantePrimaria ? assetBase.name : `${assetBase.name} (Variante SEC-${i})`;
                     let idPrefijo = country.substring(0,2).toUpperCase();
                     let idSecuencial = String(i + 1).padStart(3, '0');
 
-                    // Control de contingencia defensiva para evitar el TypeError si falta la llave
-                    let arrayIngredientes = (assetBase.ingredients) ? [...assetBase.ingredients] : ["Ingrediente Axiom"];
-                    let arrayPasos = (assetBase.steps) ? [...assetBase.steps] : ["Paso de cocción base"];
+                    let arrayIngredientes = (assetBase.ingredients) ? [...assetBase.ingredients] : ["Componente estructural"];
+                    let arrayPasos = (assetBase.steps) ? [...assetBase.steps] : ["Paso algorítmico base"];
 
                     RECIPES_DATABASE.push({
                         id: `${idPrefijo}-${idSecuencial}`,
                         country: country,
                         name: nombreFinal,
-                        technique: assetBase.technique || "Cocción base",
+                        technique: assetBase.technique || "Cocción",
                         geo3d: assetBase.geo || "Sphere Geometry",
                         vessel: assetBase.vessel || "vessel-plato-plano",
                         pbr: assetBase.pbr || "pbr-matte-rough",
@@ -450,7 +466,7 @@
             lucide.createIcons();
         }
 
-        // === 4. BUSCADOR INTEGRADO CONTINUO ===
+        // === 4. BUSCADOR INTEGRADO MULTI-FILTRO ===
         function engineSearch(query) {
             const dropdown = document.getElementById('search-results-dropdown');
             if (!query.trim()) {
@@ -518,6 +534,7 @@
                         </div>
                     </div>
 
+                    <!-- ENTORNO GRÁFICO 3D PROCEDIMENTAL MAPEDADO DE IMAGEN 3776.PNG -->
                     <div class="scene3d">
                         <div class="container3d-mesh">
                             <div class="${recipe.vessel}"></div>
@@ -525,6 +542,7 @@
                         </div>
                     </div>
 
+                    <!-- MÉTODOS Y MÉTRICAS NUTRICIONALES REALES -->
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:20px;">
                         <div class="glass-card" style="padding:12px; text-align:center;">
                             <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-family:monospace;">Calorías</div>
@@ -541,7 +559,7 @@
                     </div>
 
                     <div style="margin-bottom:16px;">
-                        <h4 style="font-size:11px; text-transform:uppercase; color:var(--text-muted); font-family:monospace; margin-bottom:6px;">Ingredientes Químicos</h4>
+                        <h4 style="font-size:11px; text-transform:uppercase; color:var(--text-muted); font-family:monospace; margin-bottom:6px;">Ingredientes Estructurales</h4>
                         <div style="display:flex; flex-wrap:wrap; gap:6px;">
                             ${recipe.ingredients.map(i => `<span style="font-size:11px; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px; border:1px solid var(--glass-border);">${i}</span>`).join('')}
                         </div>
@@ -566,7 +584,7 @@
             document.getElementById('modal-4d-engine').style.display = 'none';
         }
 
-        // === 6. COMPILADOR GRÁFICO VECTORIAL DE IMAGEN LOCAL ===
+        // === 6. COMPILADOR VECTORIAL DE IMAGEN LOCAL ===
         function downloadFichaEngine(recipeId) {
             const recipe = RECIPES_DATABASE.find(r => r.id === recipeId);
             
@@ -610,7 +628,7 @@
             img.src = url;
         }
 
-        // === 7. ENTORNO INTERFAZ Y AJUSTES LATERALES ===
+        // === 7. CONMUTADORES DE ENTORNO INTERFAZ ===
         function toggleSettingsPanel() {
             isSettingsOpen = !isSettingsOpen;
             document.getElementById('settings-panel').style.right = isSettingsOpen ? '0px' : '-340px';
@@ -646,7 +664,7 @@
             initParticles();
         }
 
-        // === 8. MOTOR GRÁFICO DE FONDO (CANVAS) ===
+        // === 8. CANVAS DE PARTÍCULAS ===
         const canvas = document.getElementById('quantum-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -699,7 +717,7 @@
             requestAnimationFrame(animateParticles);
         }
 
-        // === 9. ARRANQUE MAESTRO ===
+        // === 9. ARRANQUE MAESTRO ORDENADO ===
         initParticles();
         animateParticles();
         initInterface();
