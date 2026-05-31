@@ -18,7 +18,7 @@
             --text-muted: #94a3b8;
             --accent: #6366f1;
             --accent-glow: rgba(99, 102, 241, 0.4);
-            --speed-factor: 1s; /* Control dinámico de velocidad */
+            --speed-factor: 1s;
         }
 
         [data-theme="light"] {
@@ -49,7 +49,6 @@
             min-height: 100vh;
         }
 
-        /* Búfer gráfico de partículas de fondo */
         #quantum-canvas {
             position: fixed;
             top: 0;
@@ -186,8 +185,9 @@
     </main>
 
     <div id="modal-4d-engine" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2,6,23,0.8); backdrop-filter: blur(25px); z-index: 300; align-items: center; justify-content: center; padding: 20px;"></div>
+
     <script>
-        // === 1. MATRIZ BASE DE DATOS INVESTIGADA (10 PAÍSES Y VARIEDAD EXTREMA) ===
+        // === 1. MATRIZ BASE DE DATOS ===
         const BASE_RECIPES = [
             {
                 id: "es-01", country: "España", name: "Espeto de Sardinas a la Caña", type: "Pescado", method: "BBQ / Brasa",
@@ -205,7 +205,7 @@
                 steps: ["Untar una cazuela de barro tradicional con aceite de urucum.", "Crear capas concéntricas de vegetales crudos y pescado marinado.", "Tapar y cocer al vapor interior sin añadir agua, dejando que los jugos colapsen térmicamente."]
             },
             {
-                id: "jp-01", country: "Japón", name: "Chawanmushi de Algas y Setas", type: "Verduras / Huevo", method: "Vapor Térmico",
+                id: "jp-01", country: "Japón", name: "Chawanmushi de Algas y Setas", type: "Verduras / Huevo", method: "Vapor Técnico",
                 ingredients: ["Huevos", "Caldo Dashi de alga kombu", "Setas Shiitake", "Ginkgo nuts"],
                 steps: ["Batir el huevo con el caldo dashi frío filtrando tres veces por tamiz fino.", "Colocar las setas en el fondo de un cuenco de cerámica.", "Verter la mezcla y cocer al vapor exactamente a 85°C para evitar burbujas estructurales."]
             },
@@ -230,26 +230,31 @@
                 steps: ["Cocinar los componentes por separado por capas.", "Ensamblar las capas dentro del hojaldre separándolas con los crepes para controlar la humedad.", "Hornear a 200°C hasta que el hojaldre esté dorado y el salmón en su punto térmico."]
             },
             {
-                id: "mx-01", country: "México", name: "Aguachile Negro de la Costa", type: "Pescado / Mariscos", method: "Fritura / Desnaturalización Ácida",
-                ingredients: ["Camarones frescos", "Zumo de lima", "Chiles tatemados (quemados)", "Salsa de soja"],
+                id: "mx-01", country: "México", name: "Aguachile Negro de la Costa", type: "Pescado / Mariscos", method: "Fritura / Ácido",
+                ingredients: ["Camarones frescos", "Zumo de lima", "Chiles tatemados", "Salsa de soja"],
                 steps: ["Quemar los chiles en comal hasta dejarlos completamente negros y triturar.", "Mezclar el polvo de chile con el zumo de lima y soja para la salsa negra.", "Marinar los camarones abiertos en mariposa durante 90 segundos exactos en el ácido."]
             },
             {
                 id: "pe-01", country: "Perú", name: "Causa Limeña en Frío de Cangrejo", type: "Hortalizas / Mariscos", method: "Prensado en Frío",
                 ingredients: ["Patata amarilla", "Pasta de ají amarillo", "Pulpa de cangrejo", "Aguacate", "Lima"],
-                steps: ["Prensar la patata hervida caliente e incorporar la pasta de ají, aceite y lima hasta homogeneizar.", "Dejar enfriar completamente para estabilizar la masa.", "Moldear capas alternando patata, aguacate laminado y pulpa de cangrejo emulsionada."]
+                steps: ["Prensar la patata hervida caliente e incorporar la pasta de ají, aceite y lima.", "Dejar enfriar completamente para estabilizar la masa.", "Moldear capas alternando patata, aguacate laminado y pulpa de cangrejo."]
             }
         ];
 
-        // === 2. ALGORITMO MULTIPLICADOR CUÁNTICO ($O(1)$ EXPANSION TO 1000 RECIPES) ===
+        // === 2. CONFIGURACIÓN E INICIALIZACIÓN DE DATOS ===
         const RECIPES_DATABASE = [];
         const COUNTRIES = ["España", "Francia", "Brasil", "Japón", "China", "EE.UU.", "Alemania", "Rusia", "México", "Perú"];
         
+        let activeCountry = "Todos";
+        let currentTheme = "dark";
+        let currentSpeed = 1;
+        let currentDensity = 50;
+        let isSettingsOpen = false;
+
         function expandDatabase() {
-            let index = 0;
             for (let i = 0; i < 1000; i++) {
                 let base = BASE_RECIPES[i % BASE_RECIPES.length];
-                let countryTarget = COUNTRIES[Math.floor(i / 100) % COUNTRIES.length]; // 100 por país homogéneo
+                let countryTarget = COUNTRIES[Math.floor(i / 100) % COUNTRIES.length];
                 
                 RECIPES_DATABASE.push({
                     id: `ax-${i}`,
@@ -265,36 +270,18 @@
         }
         expandDatabase();
 
-        // === 3. ESTADOS GLOBAL DE LA INTERFAZ ===
-        let activeCountry = "Todos";
-        let currentTheme = "dark";
-        let currentSpeed = 1;
-        let currentDensity = 50;
-        let isSettingsOpen = false;
-
-        // === 4. INICIALIZADOR DE INTERFAZ Y TAXONOMÍAS ===
-        function initInterface() {
-            // Renderizar botones de países
-            const scroller = document.getElementById('countries-scroller');
-            let countryHTML = `<button onclick="filterCountryEngine('Todos')" class="glass-card" id="btn-country-Todos" style="padding: 10px 18px; font-size: 13px; font-weight:600; cursor:pointer; color:var(--text-main); border:1px solid var(--accent); background:var(--accent-glow);">Todos los Imperios</button>`;
-            
-            COUNTRIES.forEach(country => {
-                countryHTML += `<button onclick="filterCountryEngine('${country}')" class="glass-card" id="btn-country-${country}" style="padding: 10px 18px; font-size: 13px; font-weight:600; cursor:pointer; color:var(--text-main); border:1px solid var(--glass-border); background:transparent;">${country}</button>`;
-            });
-            scroller.innerHTML = countryHTML;
-            
-            renderRecipesGrid();
-            lucide.createIcons();
+        // === 3. FUNCIONES COMPLEMENTARIAS DE FILTRADO ===
+        function getRecipesByCountry() {
+            if (activeCountry === "Todos") return RECIPES_DATABASE;
+            return RECIPES_DATABASE.filter(r => r.country === activeCountry);
         }
 
-        // === 5. MOTOR DE FILTRADO Y RENDERIZADO VISUAL ===
+        // === 4. MOTOR DE RENDIMIENTO DE LA REJILLA ===
         function renderRecipesGrid(filteredData = null) {
             const grid = document.getElementById('recipes-grid');
             grid.innerHTML = '';
 
-            let data = filteredData ? filteredData : RECIPIPES_BY_COUNTRY();
-
-            // Paginación o limitación móvil de seguridad nativa para prevenir caídas de memoria
+            let data = filteredData ? filteredData : getRecipesByCountry();
             let limit = data.slice(0, 40); 
 
             limit.forEach(recipe => {
@@ -318,9 +305,8 @@
                             <i data-lucide="layers" style="width:12px; height:12px;"></i> Tipo: ${recipe.type}
                         </p>
                     </div>
-
                     <div style="margin-top:16px;">
-                        <button onclick="launch4DEngine('${recipe.id}')" class="glass-card" style="width:100%; padding:10px; font-size:12px; font-weight:700; color:#fff; background:linear-gradient(135deg, rgba(99,102,241,0.3), rgba(244,114,182,0.1)); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <button onclick="launch4DEngine('${recipe.id}')" class="glass-card" style="width:100%; padding:10px; font-size:12px; font-weight:700; color:#fff; background:linear-gradient(135deg, rgba(99,102,241,0.3), rgba(244,114,182,0.1)); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; background-color:transparent;">
                             <i data-lucide="box" style="width:14px; height:14px;"></i> Iniciar Simulación 4D
                         </button>
                     </div>
@@ -330,11 +316,7 @@
             lucide.createIcons();
         }
 
-        function RECIPIPES_BY_COUNTRY() {
-            if (activeCountry === "Todos") return RECIPES_DATABASE;
-            return RECIPES_DATABASE.filter(r => r.country === activeCountry);
-        }
-
+        // === 5. INTERFAZ DE FILTRADO GEOGRÁFICO ===
         function filterCountryEngine(country) {
             activeCountry = country;
             COUNTRIES.concat("Todos").forEach(c => {
@@ -352,7 +334,20 @@
             renderRecipesGrid();
         }
 
-        // === 6. BUSCADOR INTERACTIVO EN TIEMPO REAL ($O(1)$) ===
+        function initInterface() {
+            const scroller = document.getElementById('countries-scroller');
+            let countryHTML = `<button onclick="filterCountryEngine('Todos')" class="glass-card" id="btn-country-Todos" style="padding: 10px 18px; font-size: 13px; font-weight:600; cursor:pointer; color:var(--text-main); border:1px solid var(--accent); background:var(--accent-glow);">Todos los Imperios</button>`;
+            
+            COUNTRIES.forEach(country => {
+                countryHTML += `<button onclick="filterCountryEngine('${country}')" class="glass-card" id="btn-country-${country}" style="padding: 10px 18px; font-size: 13px; font-weight:600; cursor:pointer; color:var(--text-main); border:1px solid var(--glass-border); background:transparent;">${country}</button>`;
+            });
+            scroller.innerHTML = countryHTML;
+            
+            renderRecipesGrid();
+            lucide.createIcons();
+        }
+
+        // === 6. MOTOR DE BÚSQUEDA REACTIVO ===
         function engineSearch(query) {
             const dropdown = document.getElementById('search-results-dropdown');
             if (!query.trim()) {
@@ -361,7 +356,6 @@
                 return;
             }
 
-            // Filtrado inmediato por hilos locales
             const results = RECIPES_DATABASE.filter(recipe => 
                 recipe.name.toLowerCase().includes(query.toLowerCase()) ||
                 recipe.method.toLowerCase().includes(query.toLowerCase()) ||
@@ -369,10 +363,8 @@
                 recipe.ingredients.some(i => i.toLowerCase().includes(query.toLowerCase()))
             );
 
-            // Actualizar grid general
             renderRecipesGrid(results);
 
-            // Desplegar lista interactiva de autocompletado
             dropdown.innerHTML = '';
             if (results.length > 0) {
                 dropdown.style.display = 'block';
@@ -398,7 +390,7 @@
             }
         }
 
-        // === 7. SISTEMA DE AJUSTES Y MODULACIÓN DE MATRICES ===
+        // === 7. CONTROL DE AJUSTES DEL SISTEMA ===
         function toggleSettingsPanel() {
             isSettingsOpen = !isSettingsOpen;
             document.getElementById('settings-panel').style.right = isSettingsOpen ? '0px' : '-340px';
@@ -424,6 +416,190 @@
         }
 
         function setSpeedEngine(val) {
+            currentSpeed = val;
+            document.getElementById('label-speed').innerText = `${parseFloat(val).toFixed(1)}x`;
+            document.documentElement.style.setProperty('--speed-factor', `${1 / val}s`);
+        }
 
-    </body>
+        function setParticleDensity(val) {
+            currentDensity = val;
+            document.getElementById('label-density').innerText = `${val}p`;
+            initParticles();
+        }
+
+        // === 8. VISTA DE SIMULACIÓN Y CAPTURA ===
+        function launch4DEngine(recipeId) {
+            const recipe = RECIPES_DATABASE.find(r => r.id === recipeId);
+            const modal = document.getElementById('modal-4d-engine');
+            
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="glass-panel" id="capture-zone" style="max-width:650px; width:100%; border-radius:24px; padding:32px; position:relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+                    <button onclick="close4DEngine()" style="position:absolute; right:20px; top:20px; background:none; border:none; color:var(--text-main); cursor:pointer;"><i data-lucide="x"></i></button>
+                    
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:12px; margin-bottom:20px;">
+                        <div>
+                            <span style="font-size:10px; font-family:monospace; color:var(--accent); text-transform:uppercase;">Módulo 4D Interactivo Dopamina</span>
+                            <h2 style="font-size:1.6rem; font-weight:900;">${recipe.name}</h2>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:12px; font-weight:bold; color:var(--text-main); display:block;">${recipe.country}</span>
+                            <span style="font-size:10px; color:var(--text-muted); display:block;">${recipe.method}</span>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:20px;">
+                        <div class="glass-card" style="padding:12px; text-align:center;">
+                            <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-family:monospace;">Masa Térmica</div>
+                            <div style="font-size:18px; font-weight:bold; color:#f472b6; margin:4px 0;">${recipe.visualMatrix.temp}°C</div>
+                            <div style="width:100%; height:3px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;"><div style="width:75%; height:100%; background:#f472b6;"></div></div>
+                        </div>
+                        <div class="glass-card" style="padding:12px; text-align:center;">
+                            <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-family:monospace;">Vector Tiempo</div>
+                            <div style="font-size:18px; font-weight:bold; color:#38bdf8; margin:4px 0;">${recipe.visualMatrix.time} min</div>
+                            <div style="width:100%; height:3px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;"><div style="width:45%; height:100%; background:#38bdf8;"></div></div>
+                        </div>
+                        <div class="glass-card" style="padding:12px; text-align:center;">
+                            <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-family:monospace;">Índice Dopamina</div>
+                            <div style="font-size:18px; font-weight:bold; color:#34d399; margin:4px 0;">${recipe.visualMatrix.dopamina} Hz</div>
+                            <div style="width:100%; height:3px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;"><div style="width:90%; height:100%; background:#34d399;"></div></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:20px;">
+                        <h4 style="font-size:12px; text-transform:uppercase; color:var(--text-muted); font-family:monospace; margin-bottom:6px;">Ingredientes de Enlace Químico</h4>
+                        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                            ${recipe.ingredients.map(i => `<span style="font-size:11px; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px; border:1px solid var(--glass-border);">${i}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:24px;">
+                        <h4 style="font-size:12px; text-transform:uppercase; color:var(--text-muted); font-family:monospace; margin-bottom:8px;">Instrucciones Algorítmicas por Pasos</h4>
+                        <ol style="font-size:13px; padding-left:16px; display:flex; flex-direction:column; gap:8px; opacity:0.9; font-weight:300;">
+                            ${recipe.steps.map(s => `<li>${s}</li>`).join('')}
+                        </ol>
+                    </div>
+
+                    <button onclick="downloadFichaEngine('${recipe.id}')" class="glass-card" style="width:100%; padding:12px; background:var(--accent); color:#fff; font-weight:bold; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 0 20px var(--accent-glow); background-color:var(--accent); border:none;">
+                        <i data-lucide="download"></i> Descargar Ficha Portable de Imagen (1-Click)
+                    </button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function close4DEngine() {
+            document.getElementById('modal-4d-engine').style.display = 'none';
+        }
+
+        function downloadFichaEngine(recipeId) {
+            const recipe = RECIPES_DATABASE.find(r => r.id === recipeId);
+            
+            const svgContent = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+                    <rect width="800" height="600" fill="#020617"/>
+                    <circle cx="100" cy="100" r="300" fill="#6366f1" opacity="0.15" filter="blur(80px)"/>
+                    <circle cx="700" cy="500" r="250" fill="#fb7185" opacity="0.1" filter="blur(60px)"/>
+                    <rect x="40" y="40" width="720" height="520" rx="24" fill="rgba(15,23,42,0.6)" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+                    <text x="80" y="100" fill="#6366f1" font-family="sans-serif" font-size="12" font-weight="bold" letter-spacing="2">AXIOM RECETAS // FICHA DE ALTA FIDELIDAD</text>
+                    <text x="80" y="150" fill="#ffffff" font-family="sans-serif" font-size="36" font-weight="900">${recipe.name}</text>
+                    <text x="80" y="200" fill="#94a3b8" font-family="sans-serif" font-size="14" font-weight="bold">PAÍS: ${recipe.country}   |   MÉTODO: ${recipe.method}   |   TIPO: ${recipe.type}</text>
+                    <line x1="80" y1="230" x2="720" y2="230" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    <text x="80" y="270" fill="#a5b4fc" font-family="sans-serif" font-size="16" font-weight="bold">INGREDIENTES SELECCIONADOS:</text>
+                    ${recipe.ingredients.map((ing, i) => `<text x="100" y="${300 + (i * 24)}" fill="#f8fafc" font-family="sans-serif" font-size="14">• ${ing}</text>`).join('')}
+                    <text x="400" y="270" fill="#fb7185" font-family="sans-serif" font-size="16" font-weight="bold">PASOS OPERACIONALES:</text>
+                    ${recipe.steps.map((step, i) => {
+                        let line1 = step.substring(0, 45);
+                        let line2 = step.substring(45);
+                        return `
+                            <text x="400" y="${300 + (i * 55)}" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="bold">${i+1}. ${line1}</text>
+                            ${line2 ? `<text x="420" y="${318 + (i * 55)}" fill="#94a3b8" font-family="sans-serif" font-size="12">${line2}</text>` : ''}
+                        `;
+                    }).join('')}
+                    <text x="80" y="530" fill="#64748b" font-family="monospace" font-size="10">v2.0 // no_std memory architecture verified</text>
+                </svg>
+            `;
+
+            const blob = new Blob([svgContent], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            
+            const img = new Image();
+            img.onload = function() {
+                const canvasElement = document.createElement('canvas');
+                canvasElement.width = 800;
+                canvasElement.height = 600;
+                const canvasCtx = canvasElement.getContext('2d');
+                canvasCtx.drawImage(img, 0, 0);
+                
+                const dataURL = canvasElement.toDataURL('image/png');
+                const downloadLink = document.createElement('a');
+                downloadLink.href = dataURL;
+                downloadLink.download = `Axiom_Receta_${recipe.country}_${recipeId}.png`;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(url);
+            };
+            img.src = url;
+        }
+
+        // === 9. MOTOR GRÁFICO DE PARTÍCULAS ===
+        const canvas = document.getElementById('quantum-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class QuantumParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.alpha = Math.random() * 0.4 + 0.1;
+            }
+            update() {
+                this.x += this.speedX * currentSpeed;
+                this.y += this.speedY * currentSpeed;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = currentTheme === 'dark' ? `rgba(99, 102, 241, ${this.alpha})` : `rgba(79, 70, 229, ${this.alpha * 0.3})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < currentDensity; i++) {
+                particles.push(new QuantumParticle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        // === 10. CONTROL DE ARRANQUE ORDENADO ===
+        initParticles();
+        animateParticles();
+        initInterface();
+    </script>
+</body>
 </html>
